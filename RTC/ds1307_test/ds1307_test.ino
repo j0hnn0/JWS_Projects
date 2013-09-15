@@ -3,10 +3,16 @@
 #include <Wire.h>     // I2C Library
 #include "RTClib.h"   // DS1307 Real time clock library from Adafruit Github
 
+int led=13;
+int led2=2;
 RTC_DS1307 rtc;
-
+unsigned char i;
 void setup () {
+
+  pinMode(led, OUTPUT);
+  pinMode(led2,OUTPUT);
   Serial.begin(57600);
+
 #ifdef AVR
   Wire.begin();
 #else
@@ -14,7 +20,7 @@ void setup () {
 #endif
   rtc.begin();
   
-  //rtc.adjust(DateTime(__DATE__, __TIME__));  // Uncomment once and upload to reset time to host system time - remember to comment again and upload, battery backup wil retain time
+ //rtc.adjust(DateTime(__DATE__, __TIME__));  // Uncomment once and upload to reset time to host system time - remember to comment again and upload, battery backup wil retain time
   
   if (! rtc.isrunning()) {
     Serial.println("RTC is NOT running!");
@@ -24,6 +30,11 @@ void setup () {
 }
 
 void loop () {
+  
+  for(i=0;i<5;i++) {
+    digitalWrite(led,LOW);
+    digitalWrite(led2,HIGH);
+    delay(975);   
     DateTime now = rtc.now();
     
     Serial.print(now.year(), DEC);
@@ -37,31 +48,11 @@ void loop () {
     Serial.print(now.minute(), DEC);
     Serial.print(':');
     Serial.print(now.second(), DEC);
-    Serial.println();
+    digitalWrite(led, HIGH);
+    digitalWrite(led2,LOW);
+    Serial.print("\t\t");  
     
-    //Serial.print(" since midnight 1/1/1970 = ");
-    //Serial.print(now.unixtime());
-    //Serial.print("s = ");
-    //Serial.print(now.unixtime() / 86400L);
-    //Serial.println("d");
-    
-    // calculate a date which is 7 days and 30 seconds into the future
-    //DateTime future (now.unixtime() + 7 * 86400L + 30);
-    
-   /* Serial.print(" now + 7d + 30s: ");
-    Serial.print(future.year(), DEC);
-    Serial.print('/');
-    Serial.print(future.month(), DEC);
-    Serial.print('/');
-    Serial.print(future.day(), DEC);
-    Serial.print(' ');
-    Serial.print(future.hour(), DEC);
-    Serial.print(':');
-    Serial.print(future.minute(), DEC);
-    Serial.print(':');
-    Serial.print(future.second(), DEC);
-    Serial.println();
-    */
-    //Serial.println();
-    delay(1000);
+    delay(25);
+  }
+  Serial.println();    
 }
